@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MABCC 学习 &amp; 求职 Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef1f8;--card:#fff;--ink:#1e293b;--muted:#6b7280;--line:#e5e9f2;
+  --accent:#6366f1;--accent2:#8b5cf6;--study:#3b82f6;--job:#f59e0b;--alert:#ef4444;--ok:#10b981;
+  --shadow:0 4px 16px rgba(15,23,42,.07);
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang HK","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.hero{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 55%,#a78bfa 100%);color:#fff;padding:38px 24px 40px}
+.hero-inner{max-width:1080px;margin:0 auto}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:600}
+.hero h1{font-size:30px;margin:8px 0 6px;font-weight:800}
+.hero .sub{font-size:15px;opacity:.92}
+.hero .meta{font-size:12.5px;opacity:.75;margin-top:12px}
+main{max-width:1080px;margin:0 auto;padding:0 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:-26px 0 6px;position:relative;z-index:2}
+.kpi{background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.kpi .lbl{font-size:12px;color:var(--muted);font-weight:600}
+.kpi .val{font-size:21px;font-weight:800;margin-top:5px;line-height:1.25}
+.kpi .hint{font-size:12px;color:var(--muted);margin-top:3px}
+.panel{background:var(--card);border-radius:18px;padding:20px;margin:18px 0;box-shadow:var(--shadow);border:1px solid var(--line)}
+.panel h2{font-size:18px;font-weight:800;margin-bottom:14px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.panel-head h2{margin:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:#f8fafc;color:var(--muted);font-size:13px;font-weight:600;padding:6px 13px;border-radius:999px;cursor:pointer;transition:.15s;font-family:inherit}
+.filters button:hover{border-color:var(--accent);color:var(--accent)}
+.filters button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.prow{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;font-weight:600;margin:12px 0 6px}
+.prow:first-of-type{margin-top:0}
+.prow b{font-size:14px;color:var(--accent)}
+.bar{height:12px;border-radius:999px;background:#eef1f8;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;border-radius:999px;transition:width .35s ease}
+.bar.study>i{background:linear-gradient(90deg,#3b82f6,#6366f1)}
+.bar.job>i{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.reset{margin-top:16px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;font-family:inherit}
+.reset:hover{border-color:var(--alert);color:var(--alert)}
+.timeline{padding-left:2px}
+.tl-item{display:grid;grid-template-columns:26px 94px 1fr;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:start}
+.tl-item:last-child{border-bottom:none}
+.tick{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.tl-item.done .tl-title,.tl-item.done .tl-date{text-decoration:line-through;color:#9aa3b2}
+.tl-item.done{opacity:.62}
+.tl-date{font-weight:700;font-size:13.5px}
+.tl-date span{display:block;font-size:11.5px;color:var(--muted);font-weight:500}
+.tl-body{display:flex;align-items:flex-start;gap:9px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.tag.study{background:#dbeafe;color:#1d4ed8}
+.tag.job{background:#fef3c7;color:#b45309}
+.tl-title{font-size:14px;font-weight:600}
+.tl-note{font-size:12px;color:var(--muted);width:100%}
+.badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:auto;white-space:nowrap}
+.badge.soon{background:#fee2e2;color:#b91c1c}
+.badge.warn{background:#fef3c7;color:#b45309}
+.badge.safe{background:#e0f2fe;color:#0369a1}
+.badge.past{background:#e5e7eb;color:#6b7280}
+.courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.course{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#fbfcfe}
+.course .code{font-weight:800;font-size:14px;color:var(--accent)}
+.course .nm{font-size:13px;color:#334155;margin:3px 0 7px}
+.course .ev{font-size:12px;color:var(--muted)}
+.group-title{font-size:15px;font-weight:800;margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+.group-title:first-child{margin-top:0}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dot.g{background:var(--ok)}.dot.y{background:var(--job)}.dot.r{background:var(--alert)}
+.job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:12px}
+.job-card{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fbfcfe;transition:.15s;display:flex;flex-direction:column}
+.job-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.job-card.done{border-color:var(--ok);background:#f0fdf4}
+.job-card.done .co{color:var(--ok)}
+.job-card .co{font-weight:800;font-size:14px}
+.job-card .role{font-size:13px;color:#334155;margin:2px 0 7px}
+.job-card .row{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px}
+.chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca}
+.chip.hk{background:#dcfce7;color:#15803d}
+.chip.dl{background:#fef2f2;color:#b91c1c}
+.mark{margin-top:11px;border:1px solid var(--line);background:#fff;color:#475569;font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer;font-family:inherit;transition:.15s}
+.mark:hover{border-color:var(--accent);color:var(--accent)}
+.mark.on{background:var(--ok);border-color:var(--ok);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);letter-spacing:.03em}
+footer{max-width:1080px;margin:26px auto 0;padding:0 16px 40px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
+@media(max-width:560px){.hero h1{font-size:23px}.tl-item{grid-template-columns:26px 68px 1fr;gap:9px}.hero{padding:28px 18px 34px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">2026 / 27 Semester 1</p>
+    <h1>🎓 MABCC 学习 &amp; 求职 Dashboard</h1>
+    <p class="sub">学业 ddl × 2027 香港暑期实习申请 · 双线统一管理</p>
+    <p class="meta">更新于 2026-09-12 · 维护：Toffee🐕 · 提醒规则：ddl 前两周 · 进度自动保存</p>
+  </div>
+</header>
+
+<main>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="panel">
+    <h2>📊 进度</h2>
+    <div class="prow"><span>学业作业完成</span><b id="ptStudy">0 / 14</b></div>
+    <div class="bar study"><i id="barStudy"></i></div>
+    <div class="prow"><span>实习投递（已开放岗位）</span><b id="ptJob">0 / 21</b></div>
+    <div class="bar job"><i id="barJob"></i></div>
+    <button class="reset" id="reset">重置全部进度</button>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🔗 统一时间轴</h2>
+      <div class="filters">
+        <button data-f="all" class="on">全部</button>
+        <button data-f="study">仅学业</button>
+        <button data-f="job">仅求职</button>
+      </div>
+    </div>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section class="panel">
+    <h2>🎓 本学期课程（5 门）</h2>
+    <div class="courses" id="courses"></div>
+  </section>
+
+  <section class="panel">
+    <h2>💼 求职岗位追踪 · Base 香港</h2>
+    <p style="font-size:12.5px;color:var(--muted);margin:-6px 0 10px">点岗位卡下方按钮标记「已投递」，进度会自动更新。</p>
+    <div id="jobs"></div>
+  </section>
+
+  <section class="panel">
+    <h2>⏰ 申请时间线规律（2027 暑期）</h2>
+    <table>
+      <thead><tr><th>类型</th><th>开放窗口</th><th>截止窗口</th></tr></thead>
+      <tbody>
+        <tr><td>投行 / 咨询 / 四大 / 律所</td><td>前一年 8–12 月</td><td>10–11 月</td></tr>
+        <tr><td><b>大型快消（P&amp;G）</b></td><td>2026-09-09</td><td><b>2026-11-02</b></td></tr>
+        <tr><td><b>美妆（LVMH P&amp;C）</b></td><td>2026-09</td><td><b>2026-10-16</b></td></tr>
+        <tr><td><b>广告 / 公关 agency</b></td><td>无统一点：滚动 或 次年 Q1–Q2</td><td>依岗位</td></tr>
+        <tr><td>银行（参考）</td><td>2026-07</td><td>HSBC 10/30 · 渣打 10/31</td></tr>
+        <tr><td>本地公司 / 中小企</td><td>全年滚动</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    数据来源：公司官网 / 官方 ATS（Greenhouse·Workday·Jobvite·Lever）、Jobsdb、CTgoodjobs、LinkedIn、Joblum。<br>
+    ⚠️ 招聘广告常只挂 30 天，投递前请重新打开链接核实；"即将开放"为依往年规律的推测，非官方公告。
+  </footer>
+</main>
+
+<script>
+/* ---------- 数据 ---------- */
+const EVENTS = [
+  {d:"2026-09-30",t:"study",who:"CBS5T01",title:"Test 1"},
+  {d:"2026-10-02",t:"study",who:"CBS5503",title:"Personal Proposal"},
+  {d:"2026-10-07",t:"study",who:"CBS5T01",title:"Pre Video 上传"},
+  {d:"2026-10-20",t:"study",who:"CBS5411",title:"Critique of Research Work",note:"23:59 截止"},
+  {d:"2026-11-01",t:"study",who:"CBS5401",title:"A1 Research Plan"},
+  {d:"2026-11-18",t:"study",who:"CBS5401",title:"A2 Group Presentation"},
+  {d:"2026-11-20",t:"study",who:"CBS5503",title:"Pre Written"},
+  {d:"2026-11-23",t:"study",who:"CBS5402",title:"Group Presentation"},
+  {d:"2026-11-25",t:"study",who:"CBS5T01",title:"Test 2"},
+  {d:"2026-11-25",t:"study",who:"CBS5411",title:"Group Pre「Media Campaign」",note:"11/25 – 12/02"},
+  {d:"2026-11-27",t:"study",who:"CBS5503",title:"Oral Presentation"},
+  {d:"2026-11-30",t:"study",who:"CBS5401",title:"Extended Essay"},
+  {d:"2026-11-30",t:"study",who:"CBS5402",title:"Quiz"},
+  {d:"2026-12-09",t:"study",who:"CBS5402",title:"Research Paper（约 3000 字）"},
+  {d:"2026-10-16",t:"job",who:"LVMH 香水化妆品部",title:"实习申请截止",link:"https://www.lvmh.com/en/join-us/our-job-offers/SSCPC02515"},
+  {d:"2026-11-02",t:"job",who:"P&G 宝洁",title:"Brand Intern 申请截止",link:"https://www.pgcareers.com/global/en/greater-china-hong-kong-sar"}
+];
+
+const COURSES = [
+  {c:"CBS5401",n:"Corporate Communication: Past &amp; Present",e:"小组研究计划 10% + 口头报告 30% + 拓展论文 50% + 参与 10%"},
+  {c:"CBS5402",n:"Communication in Multicultural &amp; Multilingual Context",e:"小组展示 30% + 研究论文 50% + 测验 20%"},
+  {c:"CBS5503 ❓",n:"（语言技术 / 双语沟通方向）",e:"个人论文 50% + 小组项目 50%"},
+  {c:"CBS5411 ❓",n:"Glocalization &amp; Media Communication",e:"讨论练习 30% + 研究评论 30% + 媒体计划 40%"},
+  {c:"CBS5T01",n:"Professional Ethics &amp; Academic Integrity（1 学分）",e:"测试 + 报告 + 出勤（Pass / Fail）"}
+];
+
+const JOBS = {
+  open:[
+    {cat:"快消",co:"P&G 宝洁",role:"Brand Intern（2027 Summer）",base:"香港",dl:"2026-09-09 → 11-02",link:"https://www.pgcareers.com/global/en/greater-china-hong-kong-sar"},
+    {cat:"美妆",co:"LVMH（香水化妆品部）",role:"Full Time Internship（含 Marketing）",base:"香港",dl:"截止 2026-10-16",link:"https://www.lvmh.com/en/join-us/our-job-offers/SSCPC02515"},
+    {cat:"美妆",co:"LVMH / Moët Hennessy",role:"Marketing Intern",base:"香港",dl:"2026-09-03 起滚动",link:"https://www.lvmh.com/fr/nous-rejoindre/nos-offres/MHAP01252"},
+    {cat:"快消",co:"Colgate-Palmolive",role:"Part-time Marketing Assistant",base:"香港 · 湾仔",dl:"09-11 发布",link:"https://hk.jobsdb.com/job/94569163"},
+    {cat:"快消",co:"General Mills",role:"Marketing Intern",base:"香港 · 九龙湾",dl:"08-28 发布",link:"https://hk.jobsdb.com/job/94242569"},
+    {cat:"快消",co:"Maxim's 美心",role:"Intern, Marketing（6–12 月）",base:"香港 · 荔枝角",dl:"09-08 发布",link:"https://hk.jobsdb.com/job/94241437"},
+    {cat:"零售",co:"Versace APAC",role:"PT Marketing &amp; Communications Assistant",base:"香港 · 鲗鱼涌",dl:"09-11 发布",link:"https://hk.jobsdb.com/job/94580185"},
+    {cat:"零售",co:"OnTheList",role:"Marketing Intern",base:"香港 · 鲗鱼涌",dl:"09-09 发布",link:"https://hk.jobsdb.com/job/94466918"},
+    {cat:"科技",co:"TP-Link",role:"Marketing Intern（3–6 月）",base:"香港 · 尖沙咀",dl:"09-08 发布",link:"https://hk.jobsdb.com/job/94465613"},
+    {cat:"科技",co:"Micro Connect",role:"Marketing &amp; Communication Intern",base:"香港 · 中西区",dl:"09-10 发布",link:"https://hk.jobsdb.com/job/94520777"},
+    {cat:"Agency",co:"Edelman 爱德曼",role:"Corporate / Brand / Creative / Research Intern",base:"香港",dl:"全年滚动",link:"https://www.edelman.com/hk/careers"},
+    {cat:"Agency",co:"Dentsu 电通",role:"Social Media Intern",base:"香港 · 鲗鱼涌",dl:"滚动发布",link:"https://hk.jobsdb.com/job/92884902"},
+    {cat:"Agency",co:"Havas 汉威士",role:"Public Relations Executive（Intern / FT）",base:"香港 · 观塘",dl:"09-08 发布",link:"https://hk.jobsdb.com/job/94464520"},
+    {cat:"Agency",co:"OMD（Omnicom Media）",role:"Media Executive（Fresh Grad）",base:"香港 · 数码港",dl:"09-02 发布",link:"https://hk.jobsdb.com/job/94339713"},
+    {cat:"Agency",co:"Sinclair Communications",role:"Intern（公关）",base:"香港",dl:"常年招生",link:"https://sinclaircomms.com/career/intern-2/"},
+    {cat:"Agency",co:"Kreab",role:"Internship – Hong Kong（公关）",base:"香港 · 上环",dl:"常年招生",link:"https://kreab.com/hongkong/job/interns/"},
+    {cat:"Agency",co:"AsiaPac Net Media",role:"Social Media Intern（PT）",base:"香港 · 荔枝角",dl:"08-21 发布",link:"https://hk.jobsdb.com/job/94108770"},
+    {cat:"社媒",co:"Hypebeast",role:"Creative Intern",base:"香港 · 荃湾",dl:"08-18（Expiring）",link:"https://hk.jobsdb.com/job/94023870"},
+    {cat:"社媒",co:"XES Education &amp; Tech",role:"Marketing Intern（小红书运营）",base:"香港 · 旺角",dl:"08-28 发布",link:"https://hk.jobsdb.com/job/94247224"},
+    {cat:"社媒",co:"Pico International",role:"Digital Communications Intern",base:"香港 · 大埔",dl:"08-26 发布",link:"https://hk.jobsdb.com/job/94207693"},
+    {cat:"社媒",co:"KKday",role:"PT Marketing &amp; PR Assistant",base:"香港 · 九龙湾",dl:"08-29 发布",link:"https://hk.jobsdb.com/job/94275047"}
+  ],
+  soon:[
+    {cat:"Agency",co:"Ogilvy 奥美 HK",role:"Social / Account",dl:"2026 年 11–12 月",link:"https://www.ogilvy.com/careers"},
+    {cat:"Agency",co:"WPP Media（原 GroupM）HK",role:"Media / Social / SEM",dl:"2027 年 2–4 月",link:"https://job-boards.greenhouse.io/wppmedia"},
+    {cat:"Agency",co:"Publicis Groupe HK",role:"Account / Social / Media",dl:"2027 年 3–4 月",link:"https://careers.publicisgroupe.com/"},
+    {cat:"快消",co:"Nestlé 雀巢 HK",role:"Summer Intern, Marketing",dl:"2027 春季",link:"https://www.nestle.com.hk/en/jobs"},
+    {cat:"美妆",co:"Shiseido 资生堂 HK",role:"Brand Marketing Intern",dl:"2027 春季",link:"https://careers.shiseido.com/"},
+    {cat:"快消",co:"Colgate-Palmolive",role:"2027 暑期 Marketing",dl:"2027 春季",link:"https://hk.jobsdb.com/Colgate-Palmolive-jobs"}
+  ],
+  tbd:[
+    {cat:"快消",co:"Unilever / Coca-Cola·Swire / PepsiCo / Mondelez / Danone / Mars / Reckitt / Estée Lauder / Henkel",role:"未找到香港本地营销暑期实习",link:""},
+    {cat:"Agency",co:"BBDO / TBWA / FRED &amp; FARID HK",role:"未找到香港实习记录",link:""},
+    {cat:"Agency",co:"GSS7 数码广告毕业生支援计划",role:"毕业生培训岗（含 GroupM、Havas、DDB）",link:"https://gss7.hkdai.hk/"}
+  ]
+};
+
+/* ---------- 状态存储 ---------- */
+const STORE_KEY = "mabcc_dash_v1";
+let state = {chk:{}, app:{}};
+try{ state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }catch(e){}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- 工具 ---------- */
+const DAY = 86400000;
+function leftDays(dstr){
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(dstr+"T00:00:00") - t) / DAY);
+}
+function fmt(dstr){ const p = dstr.split("-"); return p[1] + "-" + p[2]; }
+function badge(dl){
+  if(dl < 0) return '<span class="badge past">已过 '+(-dl)+' 天</span>';
+  if(dl <= 14) return '<span class="badge soon">距今 '+dl+' 天 · 提醒窗</span>';
+  if(dl <= 30) return '<span class="badge warn">距今 '+dl+' 天</span>';
+  return '<span class="badge safe">距今 '+dl+' 天</span>';
+}
+
+/* ---------- 进度 ---------- */
+const STUDY_TOTAL = EVENTS.filter(e=>e.t==="study").length;
+const JOB_TOTAL = JOBS.open.length;
+function renderProgress(){
+  const sd = EVENTS.filter((e,i)=> e.t==="study" && state.chk["e"+i]).length;
+  const jd = JOBS.open.filter((j,i)=> state.app["p"+i]).length;
+  document.getElementById("ptStudy").textContent = sd + " / " + STUDY_TOTAL;
+  document.getElementById("ptJob").textContent = jd + " / " + JOB_TOTAL;
+  document.getElementById("barStudy").style.width = (sd/STUDY_TOTAL*100) + "%";
+  document.getElementById("barJob").style.width = (jd/JOB_TOTAL*100) + "%";
+}
+
+/* ---------- KPI ---------- */
+function renderKPI(){
+  const up = EVENTS.map((e,i)=>({...e,dl:leftDays(e.d)})).filter(e=>e.dl>=0).sort((a,b)=>a.dl-b.dl);
+  const next = up[0];
+  document.getElementById("kpis").innerHTML = `
+    <div class="kpi"><div class="lbl">修读课程</div><div class="val">5 门</div><div class="hint">CBS5401 / 5402 / 5503 / 5411 / 5T01</div></div>
+    <div class="kpi"><div class="lbl">学业 ddl 总数</div><div class="val">${STUDY_TOTAL} 个</div><div class="hint">集中在 11 月下半月</div></div>
+    <div class="kpi"><div class="lbl">可投岗位（已开放）</div><div class="val">${JOB_TOTAL} 个</div><div class="hint">Base 香港 · 滚动岗位全年可投</div></div>
+    <div class="kpi"><div class="lbl">最近 ddl</div><div class="val">${next ? next.who : "—"}</div><div class="hint">${next ? next.title+"（"+next.d+"）· 距今 "+next.dl+" 天" : ""}</div></div>`;
+}
+
+/* ---------- 时间轴 ---------- */
+let curFilter = "all";
+function renderTimeline(){
+  const list = EVENTS.map((e,i)=>({...e,i}))
+    .filter(e=> curFilter==="all" || e.t===curFilter)
+    .sort((a,b)=> a.d<b.d?-1:(a.d>b.d?1:0));
+  document.getElementById("timeline").innerHTML = list.map(e=>{
+    const dl = leftDays(e.d);
+    const done = !!state.chk["e"+e.i];
+    const tag = e.t==="study" ? '<span class="tag study">学业</span>' : '<span class="tag job">求职</span>';
+    const title = e.link
+      ? `<a href="${e.link}" target="_blank" rel="noopener">${e.who} · ${e.title} ↗</a>`
+      : `${e.who} · ${e.title}`;
+    const note = e.note ? `<div class="tl-note">${e.note}</div>` : "";
+    return `<div class="tl-item ${done?"done":""}">
+      <input class="tick" type="checkbox" data-k="e${e.i}" ${done?"checked":""} title="标记完成">
+      <div class="tl-date">${fmt(e.d)}<span>2026</span></div>
+      <div class="tl-body">${tag}<span class="tl-title">${title}</span>${badge(dl)}${note}</div>
+    </div>`;
+  }).join("");
+}
+document.getElementById("timeline").addEventListener("change", ev=>{
+  const k = ev.target.getAttribute("data-k");
+  if(!k) return;
+  if(ev.target.checked) state.chk[k]=1; else delete state.chk[k];
+  save(); renderTimeline(); renderProgress();
+});
+document.querySelectorAll(".filters button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); curFilter = b.dataset.f; renderTimeline();
+  });
+});
+
+/* ---------- 课程 ---------- */
+document.getElementById("courses").innerHTML = COURSES.map(c=>
+  `<div class="course"><div class="code">${c.c}</div><div class="nm">${c.n}</div><div class="ev">${c.e}</div></div>`
+).join("");
+
+/* ---------- 求职 ---------- */
+function jobCard(j, idx){
+  const applied = idx!=null && !!state.app["p"+idx];
+  const link = j.link ? `<div class="row"><a href="${j.link}" target="_blank" rel="noopener">申请入口 ↗</a></div>` : "";
+  const dl = j.dl ? `<span class="chip dl">${j.dl}</span>` : "";
+  const base = j.base ? `<span class="chip hk">${j.base}</span>` : "";
+  const mark = idx!=null
+    ? `<button class="mark ${applied?"on":""}" data-k="p${idx}">${applied?"✓ 已投递":"标记已投递"}</button>`
+    : "";
+  return `<div class="job-card ${applied?"done":""}">
+    <div class="co">${j.co}</div>
+    <div class="role">${j.role}</div>
+    <div class="row"><span class="chip">${j.cat}</span>${base}${dl}</div>${link}${mark}
+  </div>`;
+}
+function renderJobs(){
+  document.getElementById("jobs").innerHTML = `
+    <div class="group-title"><span class="dot g"></span>🟢 已开放 · 可立即投递（${JOBS.open.length}）</div>
+    <div class="job-grid">${JOBS.open.map((j,i)=>jobCard(j,i)).join("")}</div>
+    <div class="group-title"><span class="dot y"></span>🟡 即将开放 · 依往年规律推测（${JOBS.soon.length}）</div>
+    <div class="job-grid">${JOBS.soon.map(j=>jobCard(j,null)).join("")}</div>
+    <div class="group-title"><span class="dot r"></span>🔴 未找到 / 待确认</div>
+    <div class="job-grid">${JOBS.tbd.map(j=>jobCard(j,null)).join("")}</div>`;
+}
+document.getElementById("jobs").addEventListener("click", ev=>{
+  const b = ev.target.closest(".mark");
+  if(!b) return;
+  const k = b.getAttribute("data-k");
+  if(state.app[k]) delete state.app[k]; else state.app[k]=1;
+  save(); renderJobs(); renderProgress();
+});
+
+/* ---------- 重置 ---------- */
+document.getElementById("reset").addEventListener("click",()=>{
+  if(confirm("确定要清空所有打勾进度吗？此操作不可恢复。")){
+    state = {chk:{}, app:{}}; save();
+    renderTimeline(); renderJobs(); renderProgress();
+  }
+});
+
+/* ---------- 启动 ---------- */
+renderKPI(); renderProgress(); renderTimeline(); renderJobs();
+</script>
+</body>
+</html>
